@@ -1,6 +1,7 @@
 package pl.bianga.zamowbook.catalog.domain;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.catalog.domain.Book;
 
@@ -10,12 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+
 public class CatalogService {
 
     //prosta struktura danych, Mapa przechowywac bedzie w pamieci ksiazki, pierwszy argument to id drugi to ksiazka
 //    private final Map<Long, Book> storage = new ConcurrentHashMap<>();
     private final CatalogRepository repository;
+
+    // Wstrzykiwanie konkretnego repo gdyz apka sie zwiesza gdy bysmy chcieli jednoczesnie dwa dlatego definiujemy ktore
+    public CatalogService(@Qualifier("schoolCatalogRepositoryImpl") CatalogRepository repository) {
+        this.repository = repository;
+    }
 
     //tworzymy konstruktor z ksiazkami
 
