@@ -1,13 +1,7 @@
 package pl.bianga.zamowbook;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pl.bianga.zamowbook.catalog.application.CatalogController;
-import pl.bianga.zamowbook.catalog.domain.Book;
-import pl.bianga.zamowbook.catalog.domain.CatalogService;
-
-import java.util.List;
 
 @SpringBootApplication
 public class ZamowbookApplication {
