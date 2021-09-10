@@ -22,15 +22,5 @@ public class Book {
         this.author = author;
         this.year = year;
     }
-//
-//    @Override
-//    public String toString() {
-//        return "Book{" +
-//                "id=" + id +
-//                ", title='" + title + '\'' +
-//                ", author='" + author + '\'' +
-//                ", year=" + year +
-//                '}';
-//    }
-    //Skomentowane wszystko wyżej ponieważ korzystamy z Lomboka który za nas będzie to tworzył wystarczy dodać beany nad klasa
+
 }

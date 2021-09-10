@@ -10,16 +10,4 @@ public class ZamowbookApplication {
         SpringApplication.run(ZamowbookApplication.class, args);
     }
 
-//    private final CatalogController catalogController;
-//
-//    public ZamowbookApplication(CatalogController catalogController) {
-//        this.catalogController = catalogController;
-//    }
-
-//    @Override
-//    public void run(String... args) throws Exception {
-//        //jest to metoda która po uruchomieniu aplikacji wykona dopiero ten tutaj kod
-//        List<Book> books = catalogController.findByTitle("Ogniem i Mieczem");
-//        books.forEach(System.out::println);
-//    }
 }

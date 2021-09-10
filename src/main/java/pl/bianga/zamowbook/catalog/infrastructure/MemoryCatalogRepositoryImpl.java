@@ -24,14 +24,23 @@ class MemoryCatalogRepositoryImpl implements CatalogRepository {
 
     @Override
     public void save(Book book) {
-        long nextId = nextId();
-        book.setId(nextId());
-        storage.put(nextId, book);
+        if(book.getId() != null){
+            storage.put(book.getId(), book);
+        } else {
+            long nextId = nextId();
+            book.setId(nextId());
+            storage.put(nextId, book);
+        }
     }
 
     @Override
     public Optional<Book> findById(Long id) {
         return Optional.ofNullable(storage.get(id));
+    }
+
+    @Override
+    public void removeById(Long id) {
+        storage.remove(id);
     }
 
     private long nextId(){

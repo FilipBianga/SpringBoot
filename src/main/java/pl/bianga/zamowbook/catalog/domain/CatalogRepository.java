@@ -9,4 +9,7 @@ public interface CatalogRepository {
     void save(Book book);
 
     Optional<Book> findById(Long id);
+
+    void removeById(Long id);
+
 }
