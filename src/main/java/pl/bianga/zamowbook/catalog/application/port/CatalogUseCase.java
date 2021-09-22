@@ -3,6 +3,8 @@ package pl.bianga.zamowbook.catalog.application.port;
 import lombok.Builder;
 import lombok.Value;
 import pl.bianga.zamowbook.catalog.domain.Book;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +12,8 @@ import static java.util.Collections.emptyList;
 
 public interface CatalogUseCase {
     List<Book> findAll();
+
+    Optional<Book> findOneByTitle(String title);
 
     List<Book> findByTitle(String title);
 
@@ -26,6 +30,11 @@ public interface CatalogUseCase {
         String title;
         String author;
         Integer year;
+        BigDecimal price;
+
+        public Book toBook() {
+            return new Book(title, author, year, price);
+        }
     }
 
     @Value

@@ -28,7 +28,7 @@ class MemoryCatalogRepositoryImpl implements CatalogRepository {
             storage.put(book.getId(), book);
         } else {
             long nextId = nextId();
-            book.setId(nextId());
+            book.setId(nextId);
             storage.put(nextId, book);
         }
     }
