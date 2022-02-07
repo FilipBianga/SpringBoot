@@ -5,15 +5,20 @@ import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.catalog.domain.CatalogRepository;
+import pl.bianga.zamowbook.uploads.application.ports.UploadUseCase;
+import pl.bianga.zamowbook.uploads.domain.Upload;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static pl.bianga.zamowbook.uploads.application.ports.UploadUseCase.*;
 
 @Service
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
     private final CatalogRepository repository;
+    private final UploadUseCase upload;
 
     @Override
     public List<Book> findAll() {
@@ -95,7 +100,9 @@ class CatalogService implements CatalogUseCase {
     public void updateBookCover(UpdateBookCoverCommand command) {
         repository.findById(command.getId())
                 .ifPresent(book -> {
-//                    book.setCoverId();
+                    Upload saveUpload = upload.save(new SaveUploadCommand(command.getFilename(), command.getFile(), command.getContentType()));
+                    book.setCoverId(saveUpload.getId());
+                    repository.save(book);
                 });
     }
 }
