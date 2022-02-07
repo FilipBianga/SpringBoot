@@ -90,4 +90,12 @@ class CatalogService implements CatalogUseCase {
     public void removeById(Long id) {
         repository.removeById(id);
     }
+
+    @Override
+    public void updateBookCover(UpdateBookCoverCommand command) {
+        repository.findById(command.getId())
+                .ifPresent(book -> {
+//                    book.setCoverId();
+                });
+    }
 }

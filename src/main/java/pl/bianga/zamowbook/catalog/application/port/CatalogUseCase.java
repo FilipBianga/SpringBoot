@@ -28,9 +28,19 @@ public interface CatalogUseCase {
 
     Book addBook(CreateBookCommand command);
 
+    UpdateBookResponse updateBook(UpdateBookCommand command);
+
     void removeById(Long id);
 
-    UpdateBookResponse updateBook(UpdateBookCommand command);
+    void updateBookCover(UpdateBookCoverCommand command);
+
+    @Value
+    class UpdateBookCoverCommand {
+        Long id;
+        byte[] file;
+        String contentType;
+        String filename;
+    }
 
     @Value
     class CreateBookCommand {
