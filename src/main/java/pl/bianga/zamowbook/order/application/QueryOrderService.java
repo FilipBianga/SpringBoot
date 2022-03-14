@@ -2,8 +2,8 @@ package pl.bianga.zamowbook.order.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
-import pl.bianga.zamowbook.catalog.domain.CatalogRepository;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
 import pl.bianga.zamowbook.order.domain.Order;
 import pl.bianga.zamowbook.order.domain.OrderItem;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class QueryOrderService implements QueryOrderUseCase {
     private final OrderRepository repository;
-    private final CatalogRepository catalogRepository;
+    private final BookJpaRepository catalogRepository;
 
     @Override
     public List<RichOrder> findAll() {

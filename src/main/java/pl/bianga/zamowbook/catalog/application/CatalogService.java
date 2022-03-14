@@ -3,8 +3,8 @@ package pl.bianga.zamowbook.catalog.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
+import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
-import pl.bianga.zamowbook.catalog.domain.CatalogRepository;
 import pl.bianga.zamowbook.uploads.application.ports.UploadUseCase;
 import pl.bianga.zamowbook.uploads.domain.Upload;
 
@@ -17,7 +17,7 @@ import static pl.bianga.zamowbook.uploads.application.ports.UploadUseCase.*;
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
-    private final CatalogRepository repository;
+    private final BookJpaRepository repository;
     private final UploadUseCase upload;
 
     @Override
@@ -93,7 +93,7 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public void removeById(Long id) {
-        repository.removeById(id);
+        repository.deleteById(id);
     }
 
     @Override
