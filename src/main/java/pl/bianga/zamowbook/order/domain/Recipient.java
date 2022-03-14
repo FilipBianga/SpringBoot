@@ -1,10 +1,11 @@
 package pl.bianga.zamowbook.order.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Recipient {
     String name;
     String phone;
