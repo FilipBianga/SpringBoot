@@ -3,14 +3,14 @@ package pl.bianga.zamowbook.order.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
+import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
-import pl.bianga.zamowbook.order.domain.OrderRepository;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 
 @Service
 @RequiredArgsConstructor
 public class ManipulateOrderService implements ManipulateOrderUseCase {
-    private final OrderRepository repository;
+    private final OrderJpaRepository repository;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {

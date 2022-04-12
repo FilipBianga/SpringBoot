@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
+import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
 import pl.bianga.zamowbook.order.domain.OrderItem;
-import pl.bianga.zamowbook.order.domain.OrderRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class QueryOrderService implements QueryOrderUseCase {
-    private final OrderRepository repository;
+    private final OrderJpaRepository repository;
     private final BookJpaRepository catalogRepository;
 
     @Override

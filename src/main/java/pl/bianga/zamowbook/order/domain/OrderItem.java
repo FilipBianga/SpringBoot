@@ -1,16 +1,23 @@
 package pl.bianga.zamowbook.order.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
-import pl.bianga.zamowbook.catalog.domain.Book;
+import lombok.*;
 
-@Value
-@Getter
-@Setter
-@AllArgsConstructor
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Data
+@Entity
+@NoArgsConstructor
 public class OrderItem {
-    Long bookId;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private Long bookId;
     private int quantity;
+
+    public OrderItem(Long bookId, int quantity) {
+        this.bookId = bookId;
+        this.quantity = quantity;
+    }
 }
