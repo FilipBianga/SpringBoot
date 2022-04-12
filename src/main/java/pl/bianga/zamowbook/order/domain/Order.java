@@ -33,8 +33,7 @@ public class Order {
     @JoinColumn(name = "order_id")
     private List<OrderItem> items;
 
-//    transient - nie serializuj - nie zapisuj do Jpa (bazy)
-    private transient Recipient recipient;
+    private Recipient recipient;
 
     @CreatedDate
     private LocalDateTime createdAt;
