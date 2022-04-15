@@ -1,5 +1,6 @@
 package pl.bianga.zamowbook;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,8 @@ import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.CreateBookCommand;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.UpdateBookCommand;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.UpdateBookResponse;
+import pl.bianga.zamowbook.catalog.db.AuthorJpaRepository;
+import pl.bianga.zamowbook.catalog.domain.Author;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
@@ -17,39 +20,28 @@ import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Component
+@AllArgsConstructor
 public class ApplicationStartup implements CommandLineRunner {
 
     private final CatalogUseCase catalog;
     private final ManipulateOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
-    private final String title;
+    private final AuthorJpaRepository authorRepository;
 
-
-    public ApplicationStartup(
-            CatalogUseCase catalog,
-            ManipulateOrderUseCase placeOrder,
-            QueryOrderUseCase queryOrder,
-            @Value("${zamowbook.catalog.title}") String title) {
-        this.catalog = catalog;
-        this.placeOrder = placeOrder;
-        this.queryOrder = queryOrder;
-        this.title = title;
-
-    }
 
     @Override
     public void run(String... args) {
         initData();
-        searchCatalog();
         placeOrder();
     }
 
     private void placeOrder() {
-        Book sezonBurz = catalog.findOneByTitle("Sezon burz")
+        Book effectiveJava = catalog.findOneByTitle("Effective Java")
                 .orElseThrow(() -> new IllegalStateException("Cannot find a book"));
-        Book harryPotter = catalog.findOneByTitle("Harry Potter - Kamien Filozoficzny")
+        Book javaPuzzlers = catalog.findOneByTitle("Java Puzzlers")
                 .orElseThrow(() -> new IllegalStateException("Cannot find a book"));
 
         Recipient recipient = Recipient
@@ -65,8 +57,8 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
                 .recipient(recipient)
-                .item(new OrderItem(sezonBurz.getId(), 16))
-                .item(new OrderItem(harryPotter.getId(), 12))
+                .item(new OrderItem(effectiveJava.getId(), 16))
+                .item(new OrderItem(javaPuzzlers.getId(), 12))
                 .build();
         PlaceOrderResponse response = placeOrder.placeOrder(command);
         String result = response.handle(
@@ -80,33 +72,27 @@ public class ApplicationStartup implements CommandLineRunner {
                 .forEach(order -> System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAILS: " + order));
     }
 
-    private void searchCatalog() {
-        findByTitle();
-        findAndUpdate();
-        findByTitle();
-    }
 
     private void initData() {
-        catalog.addBook(new CreateBookCommand("Harry Potter - Kamien Filozoficzny", "J.K. Rowling", 1997, new BigDecimal("50.99")));
-        catalog.addBook(new CreateBookCommand("Władca Pierścieni - Dwie wierze", "J.R.R. Tolkien", 1954, new BigDecimal("80.99")));
-        catalog.addBook(new CreateBookCommand("Sezon burz", "Andrzej Sapkowski", 2013, new BigDecimal("70.99")));
+        Author joshua = new Author("Joshua", "Bloch");
+        Author neal = new Author("Neal", "Gafter");
+        authorRepository.save(joshua);
+        authorRepository.save(neal);
+
+        CreateBookCommand effectiveJava = new CreateBookCommand(
+                "Effective Java",
+                Set.of(joshua.getId()),
+                2005,
+                new BigDecimal("79.00")
+        );
+        CreateBookCommand javaPuzzlers = new CreateBookCommand(
+                "Java Puzzlers",
+                Set.of(joshua.getId(), neal.getId()),
+                2018,
+                new BigDecimal("99.00")
+        );
+        catalog.addBook(effectiveJava);
+        catalog.addBook(javaPuzzlers);
     }
 
-    private void findByTitle(){
-        List<Book> books = catalog.findByTitle(title);
-        books.forEach(System.out::println);
-    }
-
-    private void findAndUpdate() {
-        catalog.findOneByTitleAndAuthor("Sezon burz", "Andrzej Sapkowski")
-                .ifPresent(book -> {
-                    UpdateBookCommand command = UpdateBookCommand
-                            .builder()
-                            .id(book.getId())
-                            .title("Sezon burz, ale i deszczy")
-                            .build();
-                    UpdateBookResponse response = catalog.updateBook(command);
-                    System.out.println(response);
-                });
-    }
 }

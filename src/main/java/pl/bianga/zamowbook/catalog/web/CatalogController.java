@@ -102,8 +102,8 @@ class CatalogController {
         @NotBlank(message = "Please provide a tittle")
         private String title;
 
-        @NotBlank(message = "Please provide an author")
-        private String author;
+//        @NotBlank(message = "Please provide an author")
+//        private String author;
 
         @NotNull
         private Integer year;
@@ -113,11 +113,11 @@ class CatalogController {
         private BigDecimal price;
 
         CreateBookCommand toCreateCommand() {
-            return new CreateBookCommand(title, author, year, price);
+            return new CreateBookCommand(title, Set.of(), year, price);
         }
 
         UpdateBookCommand toUpdateCommand(Long id) {
-            return new UpdateBookCommand(id, title, author, year, price);
+            return new UpdateBookCommand(id, title, Set.of(), year, price);
         }
     }
 }
