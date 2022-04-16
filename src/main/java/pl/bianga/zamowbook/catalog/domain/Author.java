@@ -1,5 +1,6 @@
 package pl.bianga.zamowbook.catalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ public class Author {
     private String lastName;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authors")
+    @JsonIgnoreProperties("authors")
     private Set<Book> books;
 
     @CreatedDate
