@@ -35,26 +35,19 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public Optional<Book> findOneByTitle(String title) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().startsWith(title))
-                .findFirst();
+        return repository.findDistinctFirstByTitleIgnoreCase(title);
     }
 
     @Override
     public List<Book> findByTitle(String title) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.
+                findByTitleStartsWithIgnoreCase(title);
     }
 
     @Override
     public List<Book> findByAuthor(String author) {
-        return repository.findAll()
-                .stream()
-//                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository
+                .findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(author, author);
     }
 
     @Override
@@ -64,16 +57,6 @@ class CatalogService implements CatalogUseCase {
                 .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
 //                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().startsWith(title))
-//                .filter(book -> book.getAuthor().startsWith(author))
-                .findFirst();
-
     }
 
     @Override
