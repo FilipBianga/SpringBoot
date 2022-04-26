@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,7 +24,6 @@ public class Book {
     @GeneratedValue
     private Long id;
     private String title;
-    //    private String author;
     private Integer year;
     private BigDecimal price;
     private Long coverId;
@@ -30,7 +31,7 @@ public class Book {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
     @JsonIgnoreProperties("books")
-    private Set<Author> authors;
+    private Set<Author> authors = new HashSet<>();
 
     public Book(String title, Integer year, BigDecimal price) {
         this.title = title;
@@ -38,4 +39,19 @@ public class Book {
         this.price = price;
     }
 
+    public void addAuthor(Author author) {
+        authors.add(author);
+        author.getBooks().add(this);
+    }
+
+    public void removeAuthor(Author author) {
+        authors.remove(author);
+        author.getBooks().remove(this);
+    }
+
+    public void removeAuthors() {
+        Book self = this;
+        authors.forEach(author -> author.getBooks().remove(self));
+        authors.clear();
+    }
 }
