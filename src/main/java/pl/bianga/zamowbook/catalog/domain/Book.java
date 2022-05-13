@@ -25,6 +25,7 @@ public class Book extends BaseEntity {
     private BigDecimal price;
     private Long coverId;
 
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     @JsonIgnoreProperties("books")
