@@ -2,6 +2,7 @@ package pl.bianga.zamowbook.catalog.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.db.AuthorJpaRepository;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
@@ -60,6 +61,7 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    @Transactional
     public Book  addBook(CreateBookCommand command) {
         Book book = toBook(command);
         return repository.save(book);
@@ -88,12 +90,12 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    @Transactional
     public UpdateBookResponse updateBook(UpdateBookCommand command) {
         return repository
                 .findById(command.getId())
                 .map(book -> {
-                    Book updateBook = updateFields(command, book);
-                    repository.save(updateBook);
+                    updateFields(command, book);
                     return UpdateBookResponse.SUCCESS;
                 })
                 .orElseGet(() -> new UpdateBookResponse(false, Collections.singletonList("Book not found with id: " + command.getId())));
