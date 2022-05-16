@@ -1,1 +1,39 @@
 GET http://localhost:8080/catalog
+
+
+###
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "bookId": 3,
+      "quantity": 2
+    },
+    {
+      "bookId": 4,
+      "quantity": 2
+    }
+  ],
+  "recipient": {
+    "name": "John Doe",
+    "phone": "123-123-123",
+    "street": "Zefira 23/4",
+    "city": "Gdańsk",
+    "zip-code": "80-213",
+    "email": "jony@wp.pl"
+  }
+}
+
+###
+GET http://localhost:8080/orders/9
+
+
+###
+PUT http://localhost:8080/orders/9/status
+Content-Type: application/json
+
+{
+  "status": "NEW"
+}
