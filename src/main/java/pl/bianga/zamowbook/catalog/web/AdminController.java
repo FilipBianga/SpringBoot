@@ -1,6 +1,7 @@
 package pl.bianga.zamowbook.catalog.web;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import pl.bianga.zamowbook.order.domain.Recipient;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
@@ -60,7 +62,7 @@ public class AdminController {
                 orderId -> "Created ORDER with id: " + orderId,
                 error -> "Failed to created order: " + error
         );
-        System.out.println(result);
+        log.info(result);
 
         // list all orders
         queryOrder.findAll()
