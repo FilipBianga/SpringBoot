@@ -3,12 +3,14 @@ package pl.bianga.zamowbook.order.application.port;
 import lombok.Value;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.domain.Order;
+import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 public interface QueryOrderUseCase {
@@ -20,7 +22,7 @@ public interface QueryOrderUseCase {
     class RichOrder {
         Long id;
         OrderStatus status;
-        List<RichOrderItem> items;
+        Set<OrderItem> items;
         Recipient recipient;
         LocalDateTime createdAt;
 
@@ -29,11 +31,5 @@ public interface QueryOrderUseCase {
                     .map(item -> item.getBook().getPrice().multiply(new BigDecimal(item.getQuantity())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
-    }
-
-    @Value
-    class RichOrderItem {
-        Book book;
-        int quantity;
     }
 }

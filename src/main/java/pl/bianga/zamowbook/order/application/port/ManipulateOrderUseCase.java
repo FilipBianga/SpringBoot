@@ -1,9 +1,6 @@
 package pl.bianga.zamowbook.order.application.port;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import pl.bianga.zamowbook.commons.Either;
 import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
@@ -26,8 +23,14 @@ public interface ManipulateOrderUseCase {
     @AllArgsConstructor
     class PlaceOrderCommand {
         @Singular
-        List<OrderItem> items;
+        List<OrderItemCommand> items;
         Recipient recipient;
+    }
+
+    @Value
+    class OrderItemCommand {
+        Long bookId;
+        int quantity;
     }
 
     class PlaceOrderResponse extends Either<String, Long> {

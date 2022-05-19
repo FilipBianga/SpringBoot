@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
+import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
 import pl.bianga.zamowbook.order.domain.Order;
 import pl.bianga.zamowbook.order.domain.OrderItem;
@@ -39,9 +40,9 @@ public class OrdersController {
     }
     @PostMapping
     @ResponseStatus(CREATED)
-    public ResponseEntity<Object> createOrder(@RequestBody CreateOrderCommand command) {
+    public ResponseEntity<Object> createOrder(@RequestBody PlaceOrderCommand command) {
         return manipulateOrder
-                .placeOrder(command.toPlaceOrderCommand())
+                .placeOrder(command)
                 .handle(
                         orderId -> ResponseEntity.created(orderUri(orderId)).build(),
                         error -> ResponseEntity.badRequest().body(error)
@@ -64,35 +65,7 @@ public class OrdersController {
     public void deleteOrder(@PathVariable Long id) {
         manipulateOrder.deleteOrderById(id);
     }
-    @Data
-    static class CreateOrderCommand {
-        List<OrderItemCommand> items;
-        RecipientCommand recipient;
-        ManipulateOrderUseCase.PlaceOrderCommand toPlaceOrderCommand() {
-            List<OrderItem> orderItems = items
-                    .stream()
-                    .map(item -> new OrderItem(item.bookId, item.quantity))
-                    .collect(Collectors.toList());
-            return new ManipulateOrderUseCase.PlaceOrderCommand(orderItems, recipient.toRecipient());
-        }
-    }
-    @Data
-    static class OrderItemCommand {
-        Long bookId;
-        int quantity;
-    }
-    @Data
-    static class RecipientCommand {
-        String name;
-        String phone;
-        String street;
-        String city;
-        String zipCode;
-        String email;
-        Recipient toRecipient() {
-            return new Recipient(name, phone, street, city, zipCode, email);
-        }
-    }
+
     @Data
     static class UpdateStatusCommand {
         String status;

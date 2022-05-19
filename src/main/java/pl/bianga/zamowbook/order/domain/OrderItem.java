@@ -1,11 +1,10 @@
 package pl.bianga.zamowbook.order.domain;
 
 import lombok.*;
+import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.jpa.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,6 +12,8 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem extends BaseEntity{
-    private Long bookId;
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
     private int quantity;
 }

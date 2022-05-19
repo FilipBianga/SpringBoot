@@ -1,39 +1,34 @@
-package pl.bianga.zamowbook;
+package pl.bianga.zamowbook.catalog.web;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
-import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.CreateBookCommand;
-import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.UpdateBookCommand;
-import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.UpdateBookResponse;
 import pl.bianga.zamowbook.catalog.db.AuthorJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Author;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
-import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
-import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.PlaceOrderResponse;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
-import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
-@Component
+@RestController
+@RequestMapping("/admin")
 @AllArgsConstructor
-public class ApplicationStartup implements CommandLineRunner {
+public class AdminController {
 
     private final CatalogUseCase catalog;
     private final ManipulateOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
     private final AuthorJpaRepository authorRepository;
 
-
-    @Override
-    public void run(String... args) {
+    @PostMapping("/data")
+    @Transactional
+    public void initialize(){
         initData();
         placeOrder();
     }
@@ -54,13 +49,13 @@ public class ApplicationStartup implements CommandLineRunner {
                 .email("zgol@gmail.com")
                 .build();
 
-        PlaceOrderCommand command = PlaceOrderCommand
+        ManipulateOrderUseCase.PlaceOrderCommand command = ManipulateOrderUseCase.PlaceOrderCommand
                 .builder()
                 .recipient(recipient)
-                .item(new OrderItem(effectiveJava.getId(), 16))
-                .item(new OrderItem(javaPuzzlers.getId(), 12))
+                .item(new ManipulateOrderUseCase.OrderItemCommand(effectiveJava.getId(), 16))
+                .item(new ManipulateOrderUseCase.OrderItemCommand(javaPuzzlers.getId(), 12))
                 .build();
-        PlaceOrderResponse response = placeOrder.placeOrder(command);
+        ManipulateOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
         String result = response.handle(
                 orderId -> "Created ORDER with id: " + orderId,
                 error -> "Failed to created order: " + error
@@ -79,20 +74,21 @@ public class ApplicationStartup implements CommandLineRunner {
         authorRepository.save(joshua);
         authorRepository.save(neal);
 
-        CreateBookCommand effectiveJava = new CreateBookCommand(
+        CatalogUseCase.CreateBookCommand effectiveJava = new CatalogUseCase.CreateBookCommand(
                 "Effective Java",
                 Set.of(joshua.getId()),
                 2005,
-                new BigDecimal("79.00")
+                new BigDecimal("79.00"),
+                50L
         );
-        CreateBookCommand javaPuzzlers = new CreateBookCommand(
+        CatalogUseCase.CreateBookCommand javaPuzzlers = new CatalogUseCase.CreateBookCommand(
                 "Java Puzzlers",
                 Set.of(joshua.getId(), neal.getId()),
                 2018,
-                new BigDecimal("99.00")
+                new BigDecimal("99.00"),
+                50L
         );
         catalog.addBook(effectiveJava);
         catalog.addBook(javaPuzzlers);
     }
-
 }
