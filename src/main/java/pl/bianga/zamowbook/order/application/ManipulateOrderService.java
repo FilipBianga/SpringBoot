@@ -8,10 +8,7 @@ import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
 import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.db.RecipientJpaRepository;
-import pl.bianga.zamowbook.order.domain.Order;
-import pl.bianga.zamowbook.order.domain.OrderItem;
-import pl.bianga.zamowbook.order.domain.OrderStatus;
-import pl.bianga.zamowbook.order.domain.Recipient;
+import pl.bianga.zamowbook.order.domain.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +35,7 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
                 .items(items)
                 .build();
         Order save = repository.save(order);
-        bookJpaRepository.saveAll(updateBooks(items));
+        bookJpaRepository.saveAll(reduceBooks(items));
         return PlaceOrderResponse.success(save.getId());
     }
 
@@ -49,7 +46,7 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
     }
 
 
-    private Set<Book> updateBooks(Set<OrderItem> items) {
+    private Set<Book> reduceBooks(Set<OrderItem> items) {
         return items
                 .stream()
                 .map(item ->{
@@ -79,8 +76,22 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
     public void updateOrderStatus(Long id, OrderStatus status) {
         repository.findById(id)
                 .ifPresent(order -> {
-                    order.updateStatus(status);
+                    UpdateStatusResult result = order.updateStatus(status);
+                    if(result.isRevoked()) {
+                        bookJpaRepository.saveAll(revokeBooks(order.getItems()));
+                    }
                     repository.save(order);
                 });
+    }
+
+    private Set<Book> revokeBooks(Set<OrderItem> items) {
+        return items
+                .stream()
+                .map(item ->{
+                    Book book =item.getBook();
+                    book.setAvailable(book.getAvailable() + item.getQuantity());
+                    return book;
+                })
+                .collect(Collectors.toSet());
     }
 }
