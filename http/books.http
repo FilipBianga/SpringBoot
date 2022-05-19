@@ -1,5 +1,7 @@
-GET http://localhost:8080/catalog
+POST http://localhost:8080/admin/data
 
+###
+GET http://localhost:8080/catalog
 
 ###
 POST http://localhost:8080/orders
@@ -9,11 +11,11 @@ Content-Type: application/json
   "items": [
     {
       "bookId": 3,
-      "quantity": 4
+      "quantity": 1
     },
     {
       "bookId": 4,
-      "quantity": 10
+      "quantity": 1
     }
   ],
   "recipient": {

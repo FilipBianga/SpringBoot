@@ -7,9 +7,11 @@ import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
 import pl.bianga.zamowbook.order.db.OrderJpaRepository;
+import pl.bianga.zamowbook.order.db.RecipientJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
 import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
+import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ManipulateOrderService implements ManipulateOrderUseCase {
     private final OrderJpaRepository repository;
     private final BookJpaRepository bookJpaRepository;
+    private final RecipientJpaRepository recipientJpaRepository;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {
@@ -28,16 +31,23 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
                 .stream()
                 .map(this::toOrderItem)
                 .collect(Collectors.toSet());
-        
+
         Order order = Order
                 .builder()
-                .recipient(command.getRecipient())
+                .recipient(getOrCreateRecipient(command.getRecipient()))
                 .items(items)
                 .build();
         Order save = repository.save(order);
         bookJpaRepository.saveAll(updateBooks(items));
         return PlaceOrderResponse.success(save.getId());
     }
+
+    private Recipient getOrCreateRecipient(Recipient recipient) {
+        return recipientJpaRepository
+                .findByEmailIgnoreCase(recipient.getEmail())
+                .orElse(recipient);
+    }
+
 
     private Set<Book> updateBooks(Set<OrderItem> items) {
         return items
