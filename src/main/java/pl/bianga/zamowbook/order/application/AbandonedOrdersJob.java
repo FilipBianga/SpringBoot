@@ -9,6 +9,7 @@ import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,12 +18,14 @@ import java.util.List;
 public class AbandonedOrdersJob {
     private final OrderJpaRepository repository;
     private final ManipulateOrderUseCase orderUseCase;
+    private final OrdersProperties properties;
 
     @Transactional
-    @Scheduled(fixedRate = 60_000)  //co 60 sekund sprawdzanie
+    @Scheduled(cron = "${app.orders.abandon-cron}")  //co 60 sekund sprawdzanie
     public void run() {
-        LocalDateTime timestamp = LocalDateTime.now().minusMinutes(5); // co 5 minut dla produkcji lepiej sie zastanowic i dac w dniach
-        List<Order> orders = repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW ,timestamp);
+        Duration paymantPeriod = properties.getPaymentPeriod();
+        LocalDateTime olderThan = LocalDateTime.now().minus(paymantPeriod); // co 5 minut dla produkcji lepiej sie zastanowic i dac w dniach
+        List<Order> orders = repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW , olderThan);
         System.out.println("Found orders to be abandoned: " + orders.size());
         orders.forEach(order -> orderUseCase.updateOrderStatus(order.getId(), OrderStatus.ABANDONED));
     }
