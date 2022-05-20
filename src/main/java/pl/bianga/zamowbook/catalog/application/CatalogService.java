@@ -48,7 +48,7 @@ class CatalogService implements CatalogUseCase {
     @Override
     public List<Book> findByAuthor(String author) {
         return repository
-                .findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(author, author);
+                .findByAuthors_nameContainsIgnoreCase(author);
     }
 
     @Override
