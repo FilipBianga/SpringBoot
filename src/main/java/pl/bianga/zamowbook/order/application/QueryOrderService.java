@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
-import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
 import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
-import pl.bianga.zamowbook.order.domain.OrderItem;
 
 import java.util.List;
 import java.util.Optional;

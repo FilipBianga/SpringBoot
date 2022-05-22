@@ -5,19 +5,15 @@ import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.bianga.zamowbook.order.application.RichOrder;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
 import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
-import pl.bianga.zamowbook.order.domain.Order;
-import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
-import pl.bianga.zamowbook.order.domain.Recipient;
 import pl.bianga.zamowbook.web.CreatedURI;
-import pl.bianga.zamowbook.commons.Either;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -29,11 +25,11 @@ public class OrdersController {
     private final ManipulateOrderUseCase manipulateOrder;
     private final QueryOrderUseCase queryOrder;
     @GetMapping
-    public List<QueryOrderUseCase.RichOrder> getOrders() {
+    public List<RichOrder> getOrders() {
         return queryOrder.findAll();
     }
     @GetMapping("/{id}")
-    public ResponseEntity<QueryOrderUseCase.RichOrder> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id) {
         return queryOrder.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
