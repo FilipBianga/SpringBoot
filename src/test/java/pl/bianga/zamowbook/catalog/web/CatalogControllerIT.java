@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.annotation.DirtiesContext.*;
 import static pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.*;
 
+//Testy integracyjne
 @SpringBootTest
 @AutoConfigureTestDatabase
 //@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD) - użyłem adnotacji @Transactional bo jest trochę szybsza

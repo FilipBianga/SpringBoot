@@ -10,8 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import pl.bianga.zamowbook.order.application.OrdersProperties;
 
-//Audytowanie naszych encji (data w orders)
-@EnableJpaAuditing
+
 @EnableScheduling
 @EnableConfigurationProperties(OrdersProperties.class)
 @SpringBootApplication
