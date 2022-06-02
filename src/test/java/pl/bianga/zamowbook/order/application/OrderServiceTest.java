@@ -1,5 +1,6 @@
 package pl.bianga.zamowbook.order.application;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -72,6 +73,27 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CANCELED, queryOrderUseCase.findById(orderId).get().getStatus());
     }
 
+    @Disabled("homework")
+    public void userCannotRevokePaidOrder() {
+        // user nie moze wycofac juz oplaconego zamowienia
+    }
+
+    @Disabled("homework")
+    public void userCannotRevokeShippedOrder() {
+        // user nie moze wycofac juz wysłanego zamowienia
+    }
+
+    @Disabled("homework")
+    public void userCannotOrderNoExistingBooks() {
+        // user nie moze zamowic nieistniejacych ksiazek
+    }
+
+    @Disabled("homework")
+    public void userCannotOrderNegativeNumberOfBooks() {
+        // user nie moze zamowic ujemnej liczby ksiazek
+    }
+
+    // scenario_1C
     @Test
     public void userCantOrderMoreBooksThanAvailable() {
         // given
