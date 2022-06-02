@@ -44,8 +44,6 @@ class CatalogControllerWebTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
 
-
-        // then
     }
 
 }
