@@ -3,13 +3,13 @@ package pl.bianga.zamowbook.order.application;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
+import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
+import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD) // czyszczenie bazy
-class ManipulateOrderServiceTest {
+class OrderServiceTest {
 
     @Autowired
     BookJpaRepository bookJpaRepository;
@@ -30,6 +30,9 @@ class ManipulateOrderServiceTest {
 
     @Autowired
     CatalogUseCase catalogUseCase;
+
+    @Autowired
+    QueryOrderUseCase queryOrderUseCase;
 
     // scenario_1A
     @Test
@@ -49,8 +52,24 @@ class ManipulateOrderServiceTest {
 
         //then
         assertTrue(response.isSuccess());
-        assertEquals(35L, catalogUseCase.findById(effectiveJava.getId()).get().getAvailable());
-        assertEquals(40L, catalogUseCase.findById(jcip.getId()).get().getAvailable());
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+        assertEquals(40L, availableCopiesOf(jcip));
+    }
+
+    //scenario_1B
+    @Test
+    public void userCanRevokeOrder() {
+        // given
+        Book effectiveJava = givenEffectiveJava(50L);
+        Long orderId = placeOrder(effectiveJava.getId(), 15);
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+
+        // when
+        service.updateOrderStatus(orderId, OrderStatus.CANCELED);
+
+        // then
+        assertEquals(50L, availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.CANCELED, queryOrderUseCase.findById(orderId).get().getStatus());
     }
 
     @Test
@@ -82,5 +101,19 @@ class ManipulateOrderServiceTest {
 
     private Recipient recipient() {
         return Recipient.builder().email("john@wp.pl").build();
+    }
+
+    private Long placeOrder(Long bookId, int copies) {
+        PlaceOrderCommand command = PlaceOrderCommand
+                .builder()
+                .recipient(recipient())
+                .item(new OrderItemCommand(bookId, copies))
+                .build();
+
+        return  service.placeOrder(command).getRight();
+    }
+
+    private Long availableCopiesOf(Book effectiveJava) {
+        return catalogUseCase.findById(effectiveJava.getId()).get().getAvailable();
     }
 }
