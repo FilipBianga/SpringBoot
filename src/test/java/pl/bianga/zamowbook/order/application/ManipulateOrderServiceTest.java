@@ -2,8 +2,12 @@ package pl.bianga.zamowbook.order.application;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.domain.Recipient;
@@ -13,8 +17,9 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.*;
 
-@DataJpaTest
-@Import({ManipulateOrderService.class})
+@SpringBootTest
+@AutoConfigureTestDatabase
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD) // czyszczenie bazy
 class ManipulateOrderServiceTest {
 
     @Autowired
@@ -23,6 +28,10 @@ class ManipulateOrderServiceTest {
     @Autowired
     ManipulateOrderService service;
 
+    @Autowired
+    CatalogUseCase catalogUseCase;
+
+    // scenario_1A
     @Test
     public void userCanPlaceOrder() {
         // given
@@ -31,7 +40,7 @@ class ManipulateOrderServiceTest {
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
                 .recipient(recipient())
-                .item(new OrderItemCommand(effectiveJava.getId(), 10))
+                .item(new OrderItemCommand(effectiveJava.getId(), 15))
                 .item(new OrderItemCommand(jcip.getId(), 10))
                 .build();
 
@@ -40,6 +49,8 @@ class ManipulateOrderServiceTest {
 
         //then
         assertTrue(response.isSuccess());
+        assertEquals(35L, catalogUseCase.findById(effectiveJava.getId()).get().getAvailable());
+        assertEquals(40L, catalogUseCase.findById(jcip.getId()).get().getAvailable());
     }
 
     @Test
