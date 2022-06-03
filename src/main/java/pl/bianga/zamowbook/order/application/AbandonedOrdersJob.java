@@ -14,6 +14,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.*;
+
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -29,6 +31,11 @@ public class AbandonedOrdersJob {
         LocalDateTime olderThan = LocalDateTime.now().minus(paymantPeriod); // co 5 minut dla produkcji lepiej sie zastanowic i dac w dniach
         List<Order> orders = repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW , olderThan);
         log.info("Found orders to be abandoned: " + orders.size());
-        orders.forEach(order -> orderUseCase.updateOrderStatus(order.getId(), OrderStatus.ABANDONED));
+        orders.forEach(order -> {
+            String adminEmail = "admi@admin.pl";
+            // TODO: w sekcji security sie tym zjame
+            UpdateStatusCommand command = new UpdateStatusCommand(order.getId(), OrderStatus.ABANDONED, adminEmail);
+            orderUseCase.updateOrderStatus(command);
+        });
     }
 }

@@ -62,11 +62,14 @@ class OrderServiceTest {
     public void userCanRevokeOrder() {
         // given
         Book effectiveJava = givenEffectiveJava(50L);
-        Long orderId = placeOrder(effectiveJava.getId(), 15);
+        String recipient = "adam@wp.pl";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, recipient);
         assertEquals(35L, availableCopiesOf(effectiveJava));
 
         // when
-        service.updateOrderStatus(orderId, OrderStatus.CANCELED);
+        // TODO: w sekcji security
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, recipient);
+        service.updateOrderStatus(command);
 
         // then
         assertEquals(50L, availableCopiesOf(effectiveJava));
@@ -83,11 +86,13 @@ class OrderServiceTest {
         // user nie moze wycofac juz wysłanego zamowienia
     }
 
+    // scenario_1D
     @Disabled("homework")
     public void userCannotOrderNoExistingBooks() {
         // user nie moze zamowic nieistniejacych ksiazek
     }
 
+    //scenario_1E
     @Disabled("homework")
     public void userCannotOrderNegativeNumberOfBooks() {
         // user nie moze zamowic ujemnej liczby ksiazek
@@ -113,6 +118,24 @@ class OrderServiceTest {
         assertTrue(exception.getMessage().contains("Too many copies of book " + effectiveJava.getId() + " requested"));
     }
 
+    // scenario_1F
+    @Test
+    public void userCannotRevokeOtherUsersOrder() {
+        // given
+        Book effectiveJava = givenEffectiveJava(50L);
+        String adam = "adam@wp.pl";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, adam);
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+
+        // when
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, "wojtek@wp.pl");
+        service.updateOrderStatus(command);
+
+        // then
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.NEW, queryOrderUseCase.findById(orderId).get().getStatus());
+    }
+
     private Book givenJavaConcurrency(long available) {
         return bookJpaRepository.save(new Book("Java Concurrency in Practice", 2006, new BigDecimal("99.90"), available));
     }
@@ -125,10 +148,18 @@ class OrderServiceTest {
         return Recipient.builder().email("john@wp.pl").build();
     }
 
+    private Recipient recipient(String email) {
+        return Recipient.builder().email(email).build();
+    }
+
     private Long placeOrder(Long bookId, int copies) {
+        return placeOrder(bookId, copies, "johndoe@example.pl");
+    }
+
+    private Long placeOrder(Long bookId, int copies, String recipient) {
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
-                .recipient(recipient())
+                .recipient(recipient(recipient))
                 .item(new OrderItemCommand(bookId, copies))
                 .build();
 
