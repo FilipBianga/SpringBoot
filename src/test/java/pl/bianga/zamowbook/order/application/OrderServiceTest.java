@@ -10,6 +10,7 @@ import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.catalog.domain.Book;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
+import pl.bianga.zamowbook.order.domain.Delivery;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
@@ -192,30 +193,30 @@ class OrderServiceTest {
     @Test
     public void shippingCostsAreDiscountedOver100zlotys() {
         // given
-//        Book book = givenBook(50L, "49.90");
+        Book book = givenBook(50L, "49.90");
 
 
         // when
-//        Long orderId = placeOrder(book.getId(), 3);
+        Long orderId = placeOrder(book.getId(), 3);
 
         //then
-//        RichOrder order = orderOf(orderId);
-//        assertEquals("149.90", order.getFinalPrice().toPlainString());
-//        assertEquals("149.90", order.getOrderPrice(),getItemsPrice().toPlainString());
+        RichOrder order = orderOf(orderId);
+        assertEquals("149.70", order.getFinalPrice().toPlainString());
+        assertEquals("149.70", order.getOrderPrice().getItemsPrice().toPlainString());
 
     }
 
     @Test
     public void cheapestBookIsHalfPricedWhenTotalOver200zlotys() {
         // given
-//        Book book = givenBook(50L, "49.90");
+        Book book = givenBook(50L, "49.90");
 
         // when
-//        Long orderId = placeOrder(book.getId(), 5);
+        Long orderId = placeOrder(book.getId(), 5);
 
         //then
-//        RichOrder order = orderOf(orderId);
-//        assertEquals("224.55", order.getFinalPrice().toPlainString());
+        RichOrder order = orderOf(orderId);
+        assertEquals("224.55", order.getFinalPrice().toPlainString());
 
 
     }
@@ -223,13 +224,13 @@ class OrderServiceTest {
     @Test
     public void cheapestBookIsFreeWhenTotalOver400zlotys() {
         // given
-//        Book book = givenBook(50L, "49.90");
+        Book book = givenBook(50L, "49.90");
 
         // when
-//        Long orderId = placeOrder(book.getId(), 5);
+        Long orderId = placeOrder(book.getId(), 10);
 
         //then
-//        asserEquals("449.10", orderOf(orderId).getFinalPrice().toPlainString());
+        assertEquals("449.10", orderOf(orderId).getFinalPrice().toPlainString());
 
 
     }
@@ -259,6 +260,7 @@ class OrderServiceTest {
                 .builder()
                 .recipient(recipient(recipient))
                 .item(new OrderItemCommand(bookId, copies))
+                .delivery(Delivery.COURIER)
                 .build();
 
         return  service.placeOrder(command).getRight();

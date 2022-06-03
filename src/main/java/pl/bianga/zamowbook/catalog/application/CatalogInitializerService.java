@@ -143,7 +143,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
         // list all orders
         queryOrder.findAll()
-                .forEach(order -> System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAILS: " + order));
+                .forEach(order -> System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.getFinalPrice() + " DETAILS: " + order));
     }
 
 }
