@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
+import pl.bianga.zamowbook.order.application.price.OrderPrice;
+import pl.bianga.zamowbook.order.application.price.PriceService;
 import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.domain.Order;
 
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class QueryOrderService implements QueryOrderUseCase {
     private final OrderJpaRepository repository;
-    private final BookJpaRepository catalogRepository;
+    private final PriceService priceService;
 
     @Override
     @Transactional
@@ -33,12 +35,15 @@ public class QueryOrderService implements QueryOrderUseCase {
     }
 
     private RichOrder toRichOrder(Order order) {
+        OrderPrice orderPrice = priceService.calculatePrice(order);
         return new RichOrder(
                 order.getId(),
                 order.getStatus(),
                 order.getItems(),
                 order.getRecipient(),
-                order.getCreatedAt()
+                order.getCreatedAt(),
+                orderPrice,
+                orderPrice.finalPrice()
         );
     }
 }

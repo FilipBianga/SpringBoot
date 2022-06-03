@@ -176,6 +176,64 @@ class OrderServiceTest {
         assertEquals(OrderStatus.PAID, queryOrderUseCase.findById(orderId).get().getStatus());
     }
 
+    @Test
+    public void shippingCostsAreAddedToTotalOrderPrice() {
+        // given
+        Book book = givenBook(50L, "49.90");
+
+        // when
+        Long orderId = placeOrder(book.getId(), 1);
+
+        //then
+        assertEquals("59.80", orderOf(orderId).getFinalPrice().toPlainString());
+
+    }
+
+    @Test
+    public void shippingCostsAreDiscountedOver100zlotys() {
+        // given
+//        Book book = givenBook(50L, "49.90");
+
+
+        // when
+//        Long orderId = placeOrder(book.getId(), 3);
+
+        //then
+//        RichOrder order = orderOf(orderId);
+//        assertEquals("149.90", order.getFinalPrice().toPlainString());
+//        assertEquals("149.90", order.getOrderPrice(),getItemsPrice().toPlainString());
+
+    }
+
+    @Test
+    public void cheapestBookIsHalfPricedWhenTotalOver200zlotys() {
+        // given
+//        Book book = givenBook(50L, "49.90");
+
+        // when
+//        Long orderId = placeOrder(book.getId(), 5);
+
+        //then
+//        RichOrder order = orderOf(orderId);
+//        assertEquals("224.55", order.getFinalPrice().toPlainString());
+
+
+    }
+
+    @Test
+    public void cheapestBookIsFreeWhenTotalOver400zlotys() {
+        // given
+//        Book book = givenBook(50L, "49.90");
+
+        // when
+//        Long orderId = placeOrder(book.getId(), 5);
+
+        //then
+//        asserEquals("449.10", orderOf(orderId).getFinalPrice().toPlainString());
+
+
+    }
+
     private Book givenJavaConcurrency(long available) {
         return bookJpaRepository.save(new Book("Java Concurrency in Practice", 2006, new BigDecimal("99.90"), available));
     }
@@ -208,5 +266,13 @@ class OrderServiceTest {
 
     private Long availableCopiesOf(Book effectiveJava) {
         return catalogUseCase.findById(effectiveJava.getId()).get().getAvailable();
+    }
+
+    private Book givenBook(long available, String price) {
+        return bookJpaRepository.save(new Book("Java Concurrency in Practice", 2006, new BigDecimal(price), available));
+    }
+
+    private RichOrder orderOf(Long orderId) {
+        return queryOrderUseCase.findById(orderId).get();
     }
 }

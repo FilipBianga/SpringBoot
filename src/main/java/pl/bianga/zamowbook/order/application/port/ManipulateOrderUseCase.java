@@ -2,6 +2,7 @@ package pl.bianga.zamowbook.order.application.port;
 
 import lombok.*;
 import pl.bianga.zamowbook.commons.Either;
+import pl.bianga.zamowbook.order.domain.Delivery;
 import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
@@ -25,6 +26,7 @@ public interface ManipulateOrderUseCase {
         @Singular
         List<OrderItemCommand> items;
         Recipient recipient;
+        Delivery delivery;
     }
 
     @Value
