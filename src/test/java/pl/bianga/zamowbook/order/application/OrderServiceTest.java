@@ -136,6 +136,46 @@ class OrderServiceTest {
         assertEquals(OrderStatus.NEW, queryOrderUseCase.findById(orderId).get().getStatus());
     }
 
+    // scenario_2A
+    @Test
+    // TODO: w dziale security
+    public void adminCannotRevokeOtherUsersOrder() {
+        // given
+        Book effectiveJava = givenEffectiveJava(50L);
+        String wojtek = "wojtek@wp.pl";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, wojtek);
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+
+        // when
+        String admin = "admin@admin.pl";
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, admin);
+        service.updateOrderStatus(command);
+
+        // then
+        assertEquals(50L, availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.CANCELED, queryOrderUseCase.findById(orderId).get().getStatus());
+    }
+
+    //scenario_2B
+    @Test
+    public void adminCanMarkOrderAsPaid() {
+        // given
+        Book effectiveJava = givenEffectiveJava(50L);
+        String recipient = "adam@wp.pl";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, recipient);
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+
+        // when
+        // TODO: w sekcji security
+        String admin = "admin@admin.pl";
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, admin);
+        service.updateOrderStatus(command);
+
+        // then
+        assertEquals(35L, availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.PAID, queryOrderUseCase.findById(orderId).get().getStatus());
+    }
+
     private Book givenJavaConcurrency(long available) {
         return bookJpaRepository.save(new Book("Java Concurrency in Practice", 2006, new BigDecimal("99.90"), available));
     }
