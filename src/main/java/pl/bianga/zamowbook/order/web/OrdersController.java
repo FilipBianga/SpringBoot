@@ -3,6 +3,7 @@ package pl.bianga.zamowbook.order.web;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.bianga.zamowbook.order.application.RichOrder;
@@ -26,10 +27,14 @@ public class OrdersController {
 
     private final ManipulateOrderUseCase manipulateOrder;
     private final QueryOrderUseCase queryOrder;
+
+    @Secured({"ROLE_ADMIN"})
     @GetMapping
     public List<RichOrder> getOrders() {
         return queryOrder.findAll();
     }
+
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/{id}")
     public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id) {
         return queryOrder.findById(id)
@@ -46,9 +51,12 @@ public class OrdersController {
                         error -> ResponseEntity.badRequest().body(error)
                 );
     }
+
     URI orderUri(Long orderId) {
         return new CreatedURI("/" + orderId).uri();
     }
+
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PatchMapping("/{id}/status")
     @ResponseStatus(ACCEPTED)
     public void updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
