@@ -1,4 +1,4 @@
-package pl.bianga.zamowbook;
+package pl.bianga.zamowbook.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
