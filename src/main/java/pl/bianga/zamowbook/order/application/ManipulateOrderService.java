@@ -9,6 +9,7 @@ import pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase;
 import pl.bianga.zamowbook.order.db.OrderJpaRepository;
 import pl.bianga.zamowbook.order.db.RecipientJpaRepository;
 import pl.bianga.zamowbook.order.domain.*;
+import pl.bianga.zamowbook.security.UserSecurity;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
     private final OrderJpaRepository repository;
     private final BookJpaRepository bookJpaRepository;
     private final RecipientJpaRepository recipientJpaRepository;
+    private final UserSecurity userSecurity;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {
@@ -74,26 +76,21 @@ public class ManipulateOrderService implements ManipulateOrderUseCase {
     }
 
     @Override
+    @Transactional
     public UpdateStatusResponse updateOrderStatus(UpdateStatusCommand command) {
         return repository.findById(command.getOrderId())
                 .map(order -> {
-                    if(!hasAccess(command, order)) {
-                        return UpdateStatusResponse.failure("Unauthorized");
+                    if(userSecurity.isOwnerOrAdmin(order.getRecipient().getEmail(), command.getUser())) {
+                        UpdateStatusResult result = order.updateStatus(command.getStatus());
+                        if(result.isRevoked()) {
+                            bookJpaRepository.saveAll(revokeBooks(order.getItems()));
+                        }
+                        repository.save(order);
+                        return UpdateStatusResponse.success(order.getStatus());
                     }
-                    UpdateStatusResult result = order.updateStatus(command.getStatus());
-                    if(result.isRevoked()) {
-                        bookJpaRepository.saveAll(revokeBooks(order.getItems()));
-                    }
-                    repository.save(order);
-                    return UpdateStatusResponse.success(order.getStatus());
+                    return UpdateStatusResponse.failure(Error.FORBIDDEN);
                 })
-                .orElse(UpdateStatusResponse.failure("Order not found"));
-    }
-
-    private boolean hasAccess(UpdateStatusCommand command, Order order) {
-        String email = command.getEmail();
-        return email.equalsIgnoreCase(order.getRecipient().getEmail())
-                || email.equalsIgnoreCase("admin@admin.pl");
+                .orElse(UpdateStatusResponse.failure(Error.NOT_FOUND));
     }
 
     private Set<Book> revokeBooks(Set<OrderItem> items) {

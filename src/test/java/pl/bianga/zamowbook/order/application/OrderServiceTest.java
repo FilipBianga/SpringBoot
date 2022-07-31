@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.DirtiesContext;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
@@ -15,6 +17,7 @@ import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.*;
@@ -69,7 +72,7 @@ class OrderServiceTest {
 
         // when
         // TODO: w sekcji security
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, recipient);
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, user(recipient));
         service.updateOrderStatus(command);
 
         // then
@@ -129,7 +132,7 @@ class OrderServiceTest {
         assertEquals(35L, availableCopiesOf(effectiveJava));
 
         // when
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, "wojtek@wp.pl");
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, user("wojtek@wp.pl"));
         service.updateOrderStatus(command);
 
         // then
@@ -139,7 +142,6 @@ class OrderServiceTest {
 
     // scenario_2A
     @Test
-    // TODO: w dziale security
     public void adminCannotRevokeOtherUsersOrder() {
         // given
         Book effectiveJava = givenEffectiveJava(50L);
@@ -149,7 +151,7 @@ class OrderServiceTest {
 
         // when
         String admin = "admin@admin.pl";
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, admin);
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, adminUser());
         service.updateOrderStatus(command);
 
         // then
@@ -169,7 +171,7 @@ class OrderServiceTest {
         // when
         // TODO: w sekcji security
         String admin = "admin@admin.pl";
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, admin);
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, adminUser());
         service.updateOrderStatus(command);
 
         // then
@@ -241,6 +243,14 @@ class OrderServiceTest {
 
     private Book givenEffectiveJava(long available) {
         return bookJpaRepository.save(new Book("Effective Java", 2005, new BigDecimal("59.90"), available));
+    }
+
+    private User user(String email) {
+        return new User(email, "", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    }
+
+    private User adminUser() {
+        return new User("admin", "", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
     }
 
     private Recipient recipient() {
