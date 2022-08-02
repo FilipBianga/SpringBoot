@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.domain.Book;
+import pl.bianga.zamowbook.web.CreatedURI;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -64,10 +65,6 @@ class CatalogController {
         catalog.removeById(id);
     }
 
-    private URI createdBookUri(Book book) {
-        // poczytaj o tym rozwiązaniu
-        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
-    }
 
     @Secured({"ROLE_ADMIN"})
     @PatchMapping("/{id}")
@@ -98,6 +95,10 @@ class CatalogController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookCover(@PathVariable Long id) {
         catalog.removeBookCover(id);
+    }
+
+    private URI createdBookUri(Book book) {
+        return new CreatedURI("/" + book.getId().toString()).uri();
     }
 
     @Data
