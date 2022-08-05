@@ -1,27 +1,40 @@
 package pl.bianga.zamowbook.security;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.bianga.zamowbook.user.db.UserEntityRepository;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableConfigurationProperties(AdminConfig.class)
 public class ZamowbookSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final UserEntityRepository userEntityRepository;
+    private final AdminConfig config;
 
     @Bean
     User systemUser() {
-        return new User("systemUser", "", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        return config.adminUser();
     }
 
     @Override
@@ -47,14 +60,23 @@ public class ZamowbookSecurityConfiguration extends WebSecurityConfigurerAdapter
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("marek@example.org")
-                .password("{noop}xxx")
-                .roles("USER")
-                .and()
-                .withUser("admin")
-                .password("{noop}xxx")
-                .roles("ADMIN");
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    AuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        ZamowbookUserDetailsService detailsService = new ZamowbookUserDetailsService(userEntityRepository, config);
+
+        provider.setUserDetailsService(detailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return null;
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
