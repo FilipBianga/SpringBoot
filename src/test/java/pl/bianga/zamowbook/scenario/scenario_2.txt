@@ -1,0 +1,4 @@
+Jako administrator:
+2A - Mogę anulować zamówienia klienta
+2B - Mogę oznaczyć zamówienie jako opłacone (lista dostępnych książek spadła)
+2C - Mogę automatycznie anulować nieopłacone zamówienia

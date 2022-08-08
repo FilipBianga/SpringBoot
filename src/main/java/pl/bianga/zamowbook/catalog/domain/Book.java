@@ -1,29 +1,56 @@
 package pl.bianga.zamowbook.catalog.domain;
 
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+import pl.bianga.zamowbook.jpa.BaseEntity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
-@ToString
+@ToString(exclude = "authors")
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Book {
-    private Long id;
+@Entity
+public class Book extends BaseEntity {
+    @Column(unique = true)
     private String title;
-    private String author;
     private Integer year;
     private BigDecimal price;
+    private Long coverId;
+    private Long available;
 
-    public Book(String title, String author, Integer year, BigDecimal price) {
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable
+    @JsonIgnoreProperties("books")
+    private Set<Author> authors = new HashSet<>();
+
+    public Book(String title, Integer year, BigDecimal price, Long available) {
         this.title = title;
-        this.author = author;
         this.year = year;
         this.price = price;
+        this.available = available;
     }
 
+    public void addAuthor(Author author) {
+        authors.add(author);
+        author.getBooks().add(this);
+    }
+
+    public void removeAuthor(Author author) {
+        authors.remove(author);
+        author.getBooks().remove(this);
+    }
+
+    public void removeAuthors() {
+        Book self = this;
+        authors.forEach(author -> author.getBooks().remove(self));
+        authors.clear();
+    }
 }

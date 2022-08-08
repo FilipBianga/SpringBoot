@@ -1,0 +1,7 @@
+Jako użytkownik:
+1A - Mogę złożyć zamówienie na książki (lista dostępnych książek spada)
+1B - Mogę wycofać zamówienie (lista dostępnych książek wraca)
+1C - Nie mogę zamówić więcej książek niż jest dostępnych
+1D - Nie mogę zamówić książek, których nie ma w systemie
+1E - Nie mogę zamówić ujemnej liczby książek
+1F - Nie mogę anulować zamówienia innego klienta (security)

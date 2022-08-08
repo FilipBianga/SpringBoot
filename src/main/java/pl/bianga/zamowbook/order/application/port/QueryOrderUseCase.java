@@ -1,9 +1,13 @@
 package pl.bianga.zamowbook.order.application.port;
 
-import pl.bianga.zamowbook.order.domain.Order;
+import pl.bianga.zamowbook.order.application.RichOrder;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QueryOrderUseCase {
-    List<Order> findAll();
+    List<RichOrder> findAll();
+
+    Optional<RichOrder> findById(Long id);
+
 }

@@ -1,7 +1,9 @@
 package pl.bianga.zamowbook.catalog.application.port;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import java.util.Set;
 import pl.bianga.zamowbook.catalog.domain.Book;
 
 import java.math.BigDecimal;
@@ -13,50 +15,52 @@ import static java.util.Collections.emptyList;
 public interface CatalogUseCase {
     List<Book> findAll();
 
+    Optional<Book> findById(Long id);
+
     Optional<Book> findOneByTitle(String title);
 
     List<Book> findByTitle(String title);
 
-    Optional<Book> findOneByTitleAndAuthor(String title, String author);
+    List<Book> findByAuthor(String author);
 
-    void addBook(CreateBookCommand command);
+    List<Book> findByTitleAndAuthor(String title, String author);
+
+    Book addBook(CreateBookCommand command);
+
+    UpdateBookResponse updateBook(UpdateBookCommand command);
 
     void removeById(Long id);
 
-    UpdateBookResponse updateBook(UpdateBookCommand command);
+    void updateBookCover(UpdateBookCoverCommand command);
+
+    void removeBookCover(Long id);
+
+    @Value
+    class UpdateBookCoverCommand {
+        Long id;
+        byte[] file;
+        String contentType;
+        String filename;
+    }
 
     @Value
     class CreateBookCommand {
         String title;
-        String author;
+        Set<Long> authors;
         Integer year;
         BigDecimal price;
-
-        public Book toBook() {
-            return new Book(title, author, year, price);
-        }
+        Long available;
     }
 
     @Value
     @Builder
+    @AllArgsConstructor
     class UpdateBookCommand {
         Long id;
         String title;
-        String author;
+        Set<Long> authors;
         Integer year;
-
-        public Book updateFields(Book book){
-            if (title != null){
-                book.setTitle(title);
-            }
-            if (author != null){
-                book.setAuthor(author);
-            }
-            if (year != null){
-                book.setYear(year);
-            }
-            return book;
-        }
+        BigDecimal price;
     }
 
     @Value
