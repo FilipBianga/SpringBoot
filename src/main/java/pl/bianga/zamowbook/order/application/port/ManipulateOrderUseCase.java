@@ -3,6 +3,7 @@ package pl.bianga.zamowbook.order.application.port;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import pl.bianga.zamowbook.commons.Either;
 import pl.bianga.zamowbook.order.domain.Delivery;
 import pl.bianga.zamowbook.order.domain.OrderItem;
@@ -42,7 +43,7 @@ public interface ManipulateOrderUseCase {
     class UpdateStatusCommand {
         Long orderId;
         OrderStatus status;
-        User user;
+        UserDetails user;
     }
 
     class PlaceOrderResponse extends Either<String, Long> {
