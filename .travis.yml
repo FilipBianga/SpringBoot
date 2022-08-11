@@ -1,6 +1,2 @@
 language: java
-sudo: true
-dist: trusty
-jdk: corretto-15.0.2
-before_install:
-  - chmod +x mvnw
+jdk: openjdk15
