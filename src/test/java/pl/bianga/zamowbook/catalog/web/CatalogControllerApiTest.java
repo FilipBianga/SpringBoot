@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import pl.bianga.zamowbook.catalog.application.port.CatalogUseCase;
 import pl.bianga.zamowbook.catalog.domain.Book;
 
-import java.lang.reflect.ParameterizedType;
+
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
