@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.bianga.zamowbook.user.db.UserEntityRepository;
-import pl.bianga.zamowbook.user.domain.UserEntity;
+import pl.bianga.zamowbook.users.db.UserEntityRepository;
+import pl.bianga.zamowbook.users.domain.UserEntity;
 import pl.bianga.zamowbook.users.application.port.UserRegistrationUseCase;
 
 @Service

@@ -1,7 +1,7 @@
 package pl.bianga.zamowbook.users.application.port;
 
 import pl.bianga.zamowbook.commons.Either;
-import pl.bianga.zamowbook.user.domain.UserEntity;
+import pl.bianga.zamowbook.users.domain.UserEntity;
 
 public interface UserRegistrationUseCase {
     RegisterResponse register(String username, String password);

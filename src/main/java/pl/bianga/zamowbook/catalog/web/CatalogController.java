@@ -31,8 +31,9 @@ class CatalogController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Book> getAll(@RequestParam Optional<String> title,
-                             @RequestParam Optional<String> author) {
+    public List<Book> getAll(
+            @RequestParam Optional<String> title,
+            @RequestParam Optional<String> author) {
         if(title.isPresent() && author.isPresent()) {
             return catalog.findByTitleAndAuthor(title.get(), author.get());
         } else if(title.isPresent()) {

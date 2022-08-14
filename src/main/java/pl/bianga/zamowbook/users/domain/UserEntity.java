@@ -1,4 +1,4 @@
-package pl.bianga.zamowbook.user.domain;
+package pl.bianga.zamowbook.users.domain;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

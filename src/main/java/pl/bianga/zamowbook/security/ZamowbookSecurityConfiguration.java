@@ -2,8 +2,6 @@ package pl.bianga.zamowbook.security;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,21 +13,20 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.bianga.zamowbook.user.db.UserEntityRepository;
-
-import java.util.List;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import pl.bianga.zamowbook.users.db.UserEntityRepository;
 
 @AllArgsConstructor
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableConfigurationProperties(AdminConfig.class)
 @Profile("!test")
-public class ZamowbookSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class ZamowbookSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private final UserEntityRepository userEntityRepository;
     private final AdminConfig config;
@@ -37,6 +34,13 @@ public class ZamowbookSecurityConfiguration extends WebSecurityConfigurerAdapter
     @Bean
     User systemUser() {
         return config.adminUser();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins("*");
     }
 
     @Override

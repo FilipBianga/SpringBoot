@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.bianga.zamowbook.user.db.UserEntityRepository;
+import pl.bianga.zamowbook.users.db.UserEntityRepository;
 
 @AllArgsConstructor
 public class ZamowbookUserDetailsService implements UserDetailsService {

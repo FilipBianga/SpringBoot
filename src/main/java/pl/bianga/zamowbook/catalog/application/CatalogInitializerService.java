@@ -66,7 +66,8 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     }
 
     private void initBook(CsvBook csvBook) {
-        Set<Long> authors = Arrays.stream(csvBook.authors.split(","))
+        Set<Long> authors = Arrays
+                .stream(csvBook.authors.split(","))
                 .filter(StringUtils::isNotBlank)
                 .map(String::trim)
                 .map(this::getOrCreateAuthor)
@@ -75,7 +76,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
         CreateBookCommand command = new CreateBookCommand(
                 csvBook.title,
-                Set.of(),
+                authors,
                 csvBook.year,
                 csvBook.amount,
                 50L
