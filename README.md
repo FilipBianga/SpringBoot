@@ -7,15 +7,15 @@ https://www.sztukakodu.pl/spring/
 <br>
 <br>
 <ul> W ramach programu realizowane były poniższe tematy
-<li><strong> Fundamenty Springa
-<li><strong> Architektura
-<li><strong> Spring REST API
-<li><strong> JPA & Hibernate
-<li><strong> Testowanie
-<li><strong> UI
-<li><strong> Security
-<li><strong> Wdrażanie na produkcję
-<li><strong> Integrację z Frontendem
+<li><strong> Fundamenty Springa </strong>
+<li><strong> Architektura </strong>
+<li><strong> Spring REST API </strong>
+<li><strong> JPA & Hibernate </strong>
+<li><strong> Testowanie </strong>
+<li><strong> UI </strong>
+<li><strong> Security </strong>
+<li><strong> Wdrażanie na produkcję </strong>
+<li><strong> Integrację z Frontendem </strong>
 </ul>
 <br>
 To wszystko w programie wspólnej nauki ze mną - autorem szkolenia - oraz grupą studentów, którzy wspólnie z Tobą dołączają do kursu.
