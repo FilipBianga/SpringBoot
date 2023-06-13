@@ -1,6 +1,11 @@
 package pl.bianga.zamowbook.order.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Singular;
 
 import java.math.BigDecimal;
 import java.util.Set;

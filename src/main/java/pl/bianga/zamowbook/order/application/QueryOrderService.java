@@ -3,7 +3,6 @@ package pl.bianga.zamowbook.order.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.bianga.zamowbook.catalog.db.BookJpaRepository;
 import pl.bianga.zamowbook.order.application.port.QueryOrderUseCase;
 import pl.bianga.zamowbook.order.application.price.OrderPrice;
 import pl.bianga.zamowbook.order.application.price.PriceService;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class QueryOrderService implements QueryOrderUseCase {
+class QueryOrderService implements QueryOrderUseCase {
     private final OrderJpaRepository repository;
     private final PriceService priceService;
 

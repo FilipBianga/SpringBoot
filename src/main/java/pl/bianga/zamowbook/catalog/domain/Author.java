@@ -1,11 +1,14 @@
 package pl.bianga.zamowbook.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.bianga.zamowbook.jpa.BaseEntity;

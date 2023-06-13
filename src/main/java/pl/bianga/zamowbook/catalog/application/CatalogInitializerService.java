@@ -37,7 +37,7 @@ import static pl.bianga.zamowbook.catalog.application.port.CatalogUseCase.*;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CatalogInitializerService implements CatalogInitializerUseCase {
+class CatalogInitializerService implements CatalogInitializerUseCase {
 
     private final CatalogUseCase catalog;
     private final ManipulateOrderUseCase placeOrder;

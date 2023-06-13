@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/authors")
-public class AuthorsController {
+class AuthorsController {
     private final AuthorsUseCase authors;
 
     @GetMapping

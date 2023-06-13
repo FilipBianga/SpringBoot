@@ -1,11 +1,9 @@
 package pl.bianga.zamowbook.order.web;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,14 +19,16 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.boot.autoconfigure.security.SecurityProperties.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.*;
 
 @RequestMapping("/orders")
 @RestController
 @AllArgsConstructor
-public class OrdersController {
+class OrdersController {
 
     private final ManipulateOrderUseCase manipulateOrder;
     private final QueryOrderUseCase queryOrder;

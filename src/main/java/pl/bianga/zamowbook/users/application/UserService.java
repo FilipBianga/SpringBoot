@@ -10,7 +10,7 @@ import pl.bianga.zamowbook.users.application.port.UserRegistrationUseCase;
 
 @Service
 @AllArgsConstructor
-public class UserService implements UserRegistrationUseCase {
+class UserService implements UserRegistrationUseCase {
 
     private final UserEntityRepository repository;
     private final PasswordEncoder encoder;

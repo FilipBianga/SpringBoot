@@ -2,21 +2,17 @@ package pl.bianga.zamowbook.uploads.application;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import pl.bianga.zamowbook.uploads.application.ports.UploadUseCase;
 import pl.bianga.zamowbook.uploads.db.UploadJpaRepository;
 import pl.bianga.zamowbook.uploads.domain.Upload;
 
-import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class UploadService implements UploadUseCase {
+class UploadService implements UploadUseCase {
     private final UploadJpaRepository repository;
 
     @Override

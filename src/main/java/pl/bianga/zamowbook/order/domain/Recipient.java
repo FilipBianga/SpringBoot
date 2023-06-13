@@ -1,12 +1,13 @@
 package pl.bianga.zamowbook.order.domain;
 
-import lombok.*;
-import pl.bianga.zamowbook.jpa.BaseEntity;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
+import pl.bianga.zamowbook.jpa.BaseEntity;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 @Getter
 @Setter

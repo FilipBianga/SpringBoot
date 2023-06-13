@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/uploads")
 @AllArgsConstructor
-public class UploadsController {
+class UploadsController {
     private final UploadUseCase upload;
 
     @GetMapping("/{id}")

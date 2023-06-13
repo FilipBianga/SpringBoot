@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.bianga.zamowbook.catalog.application.port.CatalogInitializerUseCase;
 
-
 @Slf4j
 @RestController
 @Secured({"ROLE_ADMIN"})
 @RequestMapping("/admin")
 @AllArgsConstructor
-public class AdminController {
+class AdminController {
     private final CatalogInitializerUseCase initializer;
 
     @PostMapping("/initialization")

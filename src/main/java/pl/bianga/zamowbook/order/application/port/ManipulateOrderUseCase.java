@@ -2,18 +2,13 @@ package pl.bianga.zamowbook.order.application.port;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.bianga.zamowbook.commons.Either;
 import pl.bianga.zamowbook.order.domain.Delivery;
-import pl.bianga.zamowbook.order.domain.OrderItem;
 import pl.bianga.zamowbook.order.domain.OrderStatus;
 import pl.bianga.zamowbook.order.domain.Recipient;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static java.util.Collections.emptyList;
 
 public interface ManipulateOrderUseCase {
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);

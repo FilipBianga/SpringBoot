@@ -3,7 +3,6 @@ package pl.bianga.zamowbook.order.application;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,7 @@ import static pl.bianga.zamowbook.order.application.port.ManipulateOrderUseCase.
 @Slf4j
 @Component
 @AllArgsConstructor
-public class AbandonedOrdersJob {
+class AbandonedOrdersJob {
     private final OrderJpaRepository repository;
     private final ManipulateOrderUseCase orderUseCase;
     private final OrdersProperties properties;

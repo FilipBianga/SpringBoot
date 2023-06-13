@@ -1,17 +1,17 @@
 package pl.bianga.zamowbook.catalog.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import pl.bianga.zamowbook.jpa.BaseEntity;
 
 import java.util.HashSet;
 import java.util.Set;
 
-
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @ToString(exclude = "authors")
 @Getter
